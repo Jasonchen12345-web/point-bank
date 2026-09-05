@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>加分本｜班級點數與獎勵系統</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDF2ED; --paper:#FFFFFF; --ink:#14231D; --ink-soft:#4B5C53;
+    --forest:#1D3B32; --forest-dark:#122720; --gold:#D8A73E; --gold-soft:#F6E7BE;
+    --teal:#3E7C6F; --coral:#C1503A; --line:#D9E1D9; --radius:16px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Nunito Sans',sans-serif;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Fraunces',serif;letter-spacing:-0.01em;color:var(--forest);}
+  a{color:inherit;}
+
+  .hero{
+    background:
+      radial-gradient(circle at 15% 20%, rgba(216,167,62,0.18), transparent 40%),
+      radial-gradient(circle at 85% 15%, rgba(62,124,111,0.16), transparent 45%),
+      var(--forest);
+    color:#fff;
+    padding:64px 24px 56px;
+    text-align:center;
+  }
+  .hero .star{width:46px;height:46px;color:var(--gold);margin-bottom:10px;}
+  .hero h1{color:#fff;font-size:clamp(28px,5vw,42px);margin:8px 0 10px;}
+  .hero p{color:#DCE7DF;font-size:16px;max-width:560px;margin:0 auto 28px;line-height:1.7;}
+  .enter-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--gold);color:#3a2b06;font-weight:800;font-size:17px;
+    padding:14px 30px;border-radius:999px;text-decoration:none;
+    box-shadow:0 14px 30px -12px rgba(0,0,0,0.4);
+  }
+  .enter-btn:hover{background:#e6b854;}
+
+  .wrap{max-width:920px;margin:0 auto;padding:48px 24px 80px;}
+  .section-title{font-size:24px;margin:0 0 6px;}
+  .section-sub{color:var(--ink-soft);font-size:14px;margin:0 0 26px;}
+
+  .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:48px;}
+  .role-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:24px;}
+  .role-card h3{display:flex;align-items:center;gap:8px;font-size:18px;margin:0 0 16px;}
+  .role-tag{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:26px;height:26px;border-radius:50%;background:var(--gold-soft);color:#8A650F;
+    font-size:13px;font-weight:800;flex:none;
+  }
+  .role-card ol{margin:0;padding-left:20px;line-height:2;font-size:14.5px;color:var(--ink);}
+  .role-card ol li b{color:var(--forest);}
+
+  .tip-strip{
+    display:flex;gap:16px;flex-wrap:wrap;margin-bottom:48px;
+  }
+  .tip-card{
+    flex:1;min-width:220px;background:var(--paper);border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px 20px;
+  }
+  .tip-card .tip-icon{font-size:22px;margin-bottom:8px;display:block;}
+  .tip-card h4{margin:0 0 6px;font-size:14.5px;color:var(--forest);font-family:'Fraunces',serif;}
+  .tip-card p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.6;}
+
+  .faq{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:6px 24px;}
+  .faq details{border-bottom:1px solid var(--line);padding:16px 0;}
+  .faq details:last-child{border-bottom:none;}
+  .faq summary{font-weight:800;cursor:pointer;font-size:15px;color:var(--forest);}
+  .faq p{margin:10px 0 0;font-size:14px;color:var(--ink-soft);line-height:1.7;}
+
+  .bottom-cta{text-align:center;padding:40px 24px 10px;}
+  .bottom-cta a{color:var(--teal);font-weight:800;text-decoration:none;}
+
+  @media (max-width: 700px){
+    .role-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="hero">
+    <svg class="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.14 6.6.72-4.9 4.6 1.3 6.54L12 17.6l-5.9 3.9 1.3-6.54-4.9-4.6 6.6-.72L12 2.5z"/></svg>
+    <h1>加分本</h1>
+    <p>班級點數管理與獎勵兌換系統。老師記錄點數、審核申請，學生查看點數、申請加分、兌換獎勵——雲端同步，每台平板都看得到最新狀態。</p>
+    <a class="enter-btn" href="main.html">👉 進入系統</a>
+  </div>
+
+  <div class="wrap">
+
+    <h2 class="section-title">操作教學</h2>
+    <p class="section-sub">第一次使用嗎？看看老師和學生分別要做什麼</p>
+
+    <div class="role-grid">
+      <div class="role-card">
+        <h3><span class="role-tag">師</span>老師怎麼用</h3>
+        <ol>
+          <li>點「進入系統」，選擇<b>老師登入</b>；第一次使用可以先用示範帳號 <b>teacher / 1234</b> 登入，或建立自己的新帳號</li>
+          <li>登入後如果還沒有班級，先新增一個<b>班級</b></li>
+          <li>到「<b>學生管理</b>」新增班上每一位學生的帳號密碼，之後也能隨時修改密碼</li>
+          <li>到「<b>點數項目</b>」設定常用的加減分理由（例如：上課發言 +5、忘記帶作業 −2），加減分時可以快速套用</li>
+          <li>到「<b>獎勵清單</b>」新增可以兌換的獎勵，也可以上傳自己拍的照片讓畫面更清楚</li>
+          <li>學生送出的加分或兌換申請，都會出現在「<b>待審核中心</b>」，按一下「通過」或「退回」即可</li>
+        </ol>
+      </div>
+      <div class="role-card">
+        <h3><span class="role-tag">生</span>學生怎麼用</h3>
+        <ol>
+          <li>點「進入系統」，選擇<b>學生登入</b>，輸入老師給的帳號密碼</li>
+          <li>在「<b>總覽</b>」可以看到自己目前的點數與最近的紀錄</li>
+          <li>做了值得加分的事，到「<b>申請加分</b>」寫下說明並送出，等老師審核</li>
+          <li>點數夠的話，到「<b>兌換獎勵</b>」選一個喜歡的獎勵按「兌換」，送出後等老師審核</li>
+          <li>在「<b>我的紀錄</b>」可以查到所有加分申請與兌換的完整歷史與目前狀態</li>
+        </ol>
+      </div>
+    </div>
+
+    <h2 class="section-title">使用小提醒</h2>
+    <p class="section-sub">讓系統用起來更順手的幾個建議</p>
+
+    <div class="tip-strip">
+      <div class="tip-card">
+        <span class="tip-icon">🔐</span>
+        <h4>盡快修改示範密碼</h4>
+        <p>示範帳號 teacher / 1234 大家都看得到，建議登入後在學生管理／自己的帳號裡改成自訂密碼。</p>
+      </div>
+      <div class="tip-card">
+        <span class="tip-icon">☁️</span>
+        <h4>資料即時同步</h4>
+        <p>老師和每位學生的平板都是連到同一個雲端資料庫，只要有網路，各自的操作都會即時同步顯示。</p>
+      </div>
+      <div class="tip-card">
+        <span class="tip-icon">🖼️</span>
+        <h4>獎勵可以放照片</h4>
+        <p>新增獎勵時可以直接上傳照片，系統會自動壓縮成小圖，不需要另外找地方放圖片。</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">常見問題</h2>
+    <div class="faq">
+      <details open>
+        <summary>忘記學生的密碼怎麼辦？</summary>
+        <p>老師登入後到「學生管理」，該學生列表右側有「修改密碼」按鈕，點開後會直接顯示目前的密碼，也可以直接改成新的。</p>
+      </details>
+      <details>
+        <summary>點數審核錯了可以復原嗎？</summary>
+        <p>目前的審核動作（通過／退回）不能一鍵復原，如果按錯了，可以到「學生管理」用「加減分」手動調整回正確的點數。</p>
+      </details>
+      <details>
+        <summary>沒有網路可以使用嗎？</summary>
+        <p>不行，這個系統的資料存放在雲端資料庫，需要連上網路才能讀取與寫入最新的點數與申請狀態。</p>
+      </details>
+      <details>
+        <summary>可以同時有多位老師、多個班級嗎？</summary>
+        <p>可以，在登入畫面選擇「還沒有老師帳號？建立一個」即可新增老師帳號；每位老師登入後也可以自己建立多個班級。</p>
+      </details>
+    </div>
+
+  </div>
+
+  <div class="bottom-cta">
+    <a href="main.html">👉 準備好了，進入系統</a>
+  </div>
+
+</body>
+</html>
