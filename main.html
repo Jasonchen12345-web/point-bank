@@ -415,6 +415,23 @@
   var state = null;
   var ui = { loginRole:'teacher', signupMode:false, teacherTab:'overview', currentClassId:null, modal:null, error:'' };
 
+  /* ----- 本地 Session 存取管理 ----- */
+  function getLocalSession() {
+    try {
+      return JSON.parse(localStorage.getItem('pointbank_session') || 'null');
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function setLocalSession(sessionObj) {
+    if (sessionObj) {
+      localStorage.setItem('pointbank_session', JSON.stringify(sessionObj));
+    } else {
+      localStorage.removeItem('pointbank_session');
+    }
+  }
+
   function uid(prefix){
     return (prefix||'id') + '_' + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
   }
@@ -443,15 +460,17 @@
         {id:uid('rw'), classId:classId, name:'班級小禮物', cost:80, description:'兌換文具小禮物一份'}
       ],
       transactions:[],
-      redemptions:[],
-      session:null
+      redemptions:[]
     };
   }
 
-  // 儲存資料至 Firebase 雲端資料庫
+  // 儲存資料至 Firebase 雲端資料庫（只存共享資料，不寫入個人登入 session）
   function save(){
     if(!state) return;
-    set(dbRef, state).catch(function(error) {
+    var dataToSave = JSON.parse(JSON.stringify(state));
+    delete dataToSave.session; // 確保不寫入雲端
+
+    set(dbRef, dataToSave).catch(function(error) {
       console.error("寫入 Firebase 失敗:", error);
     });
   }
@@ -508,17 +527,20 @@
       app.innerHTML = '<div style="padding:40px;text-align:center;">雲端資料庫連線中...</div>';
       return;
     }
-    if(!state.session){
+    
+    var session = getLocalSession();
+
+    if(!session){
       app.innerHTML = renderLogin();
       bindLogin();
       return;
     }
-    if(state.session.role === 'teacher'){
-      app.innerHTML = renderTeacherApp();
-      bindTeacherApp();
+    if(session.role === 'teacher'){
+      app.innerHTML = renderTeacherApp(session);
+      bindTeacherApp(session);
     } else {
-      app.innerHTML = renderStudentApp();
-      bindStudentApp();
+      app.innerHTML = renderStudentApp(session);
+      bindStudentApp(session);
     }
   }
 
@@ -582,6 +604,7 @@
     var resetBtn = document.getElementById('resetAllBtn');
     if(resetBtn) resetBtn.addEventListener('click', function(){
       if(confirm('確定要清除雲端所有資料並重置嗎？這個動作無法復原。')){
+        setLocalSession(null);
         state = defaultState();
         save();
       }
@@ -597,19 +620,19 @@
         if(ui.loginRole === 'teacher'){
           var t = (state.teachers||[]).find(function(x){return x.username===username && x.password===password;});
           if(!t){ ui.error='帳號或密碼不正確'; render(); return; }
-          state.session = {role:'teacher', id:t.id};
+          setLocalSession({role:'teacher', id:t.id});
           var cls = classesOfTeacher(t.id);
           ui.currentClassId = cls.length ? cls[0].id : null;
           ui.teacherTab = 'overview';
           ui.error='';
-          save(); render();
+          render();
         } else {
           var s = (state.students||[]).find(function(x){return x.username===username && x.password===password;});
           if(!s){ ui.error='帳號或密碼不正確'; render(); return; }
-          state.session = {role:'student', id:s.id};
+          setLocalSession({role:'student', id:s.id});
           ui.studentTab = 'overview';
           ui.error='';
-          save(); render();
+          render();
         }
       });
     }
@@ -626,7 +649,7 @@
         }
         var newT = {id:uid('t'), username:username, password:password, name:name};
         state.teachers.push(newT);
-        state.session = {role:'teacher', id:newT.id};
+        setLocalSession({role:'teacher', id:newT.id});
         ui.currentClassId = null;
         ui.teacherTab = 'overview';
         ui.signupMode = false;
@@ -637,13 +660,17 @@
   }
 
   function logout(){
-    state.session = null;
-    save(); render();
+    setLocalSession(null);
+    render();
   }
 
   /* ================= TEACHER APP ================= */
-  function renderTeacherApp(){
-    var teacher = findTeacher(state.session.id);
+  function renderTeacherApp(session){
+    var teacher = findTeacher(session.id);
+    if (!teacher) {
+      logout();
+      return '';
+    }
     var classes = classesOfTeacher(teacher.id);
     if(!ui.currentClassId || !findClass(ui.currentClassId) || findClass(ui.currentClassId).teacherId!==teacher.id){
       ui.currentClassId = classes.length ? classes[0].id : null;
@@ -887,7 +914,7 @@
     return '';
   }
 
-  function bindTeacherApp(){
+  function bindTeacherApp(session){
     document.getElementById('logoutBtn').addEventListener('click', logout);
 
     var classSelect = document.getElementById('classSelect');
@@ -1025,7 +1052,7 @@
       var fd = new FormData(addClassForm);
       var name = (fd.get('name')||'').trim();
       if(!name) return;
-      var newClass = {id:uid('c'), name:name, teacherId:state.session.id};
+      var newClass = {id:uid('c'), name:name, teacherId:session.id};
       state.classes.push(newClass);
       ui.currentClassId = newClass.id;
       ui.modal = null;
@@ -1055,8 +1082,12 @@
   }
 
   /* ================= STUDENT APP ================= */
-  function renderStudentApp(){
-    var student = findStudent(state.session.id);
+  function renderStudentApp(session){
+    var student = findStudent(session.id);
+    if (!student) {
+      logout();
+      return '';
+    }
     var cls = findClass(student?student.classId:'');
     var tabs = [
       {key:'overview', label:'總覽'},
@@ -1196,8 +1227,8 @@
     );
   }
 
-  function bindStudentApp(){
-    var student = findStudent(state.session.id);
+  function bindStudentApp(session){
+    var student = findStudent(session.id);
     document.getElementById('logoutBtn').addEventListener('click', logout);
     document.querySelectorAll('.tabrail button[data-tab]').forEach(function(btn){
       btn.addEventListener('click', function(){ ui.studentTab = btn.getAttribute('data-tab'); render(); });
