@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星際班級點數紀事錄 - 官方首頁</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 100%;
+      height: 100vh;
+      background: #000 url('https://www.script-tutorials.com/demos/360/images/stars.png') repeat;
+      overflow: hidden;
+      color: #fed530; /* 星戰經典黃色 */
+      font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 點擊提示與音效控制 */
+    .audio-hint {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid #fed530;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: #4bd5ee;
+      cursor: pointer;
+    }
+
+    /* 1. 開場白動態 */
+    .intro {
+      position: absolute;
+      top: 45%;
+      font-size: 2rem;
+      color: #4bd5ee;
+      opacity: 0;
+      animation: intro 4s ease-out 1s forwards;
+      text-align: center;
+    }
+
+    /* 2. 主標題縮放效果 */
+    .title {
+      position: absolute;
+      top: 35%;
+      text-align: center;
+      opacity: 0;
+      transform: scale(8);
+      animation: logo 6s ease-out 5s forwards;
+    }
+
+    .title h1 {
+      font-size: 5rem;
+      margin: 0;
+      letter-spacing: 5px;
+      -webkit-text-stroke: 2px #fed530;
+      color: transparent;
+    }
+
+    .title h2 {
+      font-size: 2rem;
+      margin-top: 10px;
+    }
+
+    /* 3. 3D 透視與滾動容器 */
+    .star-wars-crawl {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      perspective: 400px; /* 創造 3D 深度 */
+      font-size: 1.8rem;
+      font-weight: 600;
+      text-align: justify;
+    }
+
+    .crawl-content {
+      position: relative;
+      top: 9999px;
+      width: 65%;
+      max-width: 800px;
+      transform: rotateX(25deg); /* 向後傾斜角度 */
+      animation: crawl 45s linear 10s forwards;
+    }
+
+    .crawl-content .episode {
+      text-align: center;
+      font-size: 1.5rem;
+    }
+
+    .crawl-content .heading {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+    }
+
+    .crawl-content p {
+      line-height: 1.8;
+      margin-bottom: 30px;
+    }
+
+    /* 點數榜樣式 */
+    .scoreboard {
+      margin-top: 50px;
+      border: 2px solid #fed530;
+      padding: 25px;
+      background: rgba(0, 0, 0, 0.85);
+      box-shadow: 0 0 15px rgba(254, 213, 48, 0.3);
+    }
+
+    .scoreboard h3 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 2.2rem;
+      color: #fff;
+      text-shadow: 0 0 8px #fed530;
+    }
+
+    .scoreboard ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .scoreboard li {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+      border-bottom: 1px dashed #fed530;
+      padding-bottom: 8px;
+    }
+
+    /* 首頁按鈕區域 */
+    .enter-btn-container {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .enter-btn {
