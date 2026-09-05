@@ -2,246 +2,31 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>星際班級點數紀事錄 - 官方首頁</title>
-  <style>
-    /* 將所有 CSS 樣式直接內嵌，確保 GitHub Pages 能完美讀取 */
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      width: 100%;
-      height: 100vh;
-      background: #000 url('https://www.script-tutorials.com/demos/360/images/stars.png') repeat;
-      overflow: hidden;
-      color: #fed530; /* 星戰經典黃色 */
-      font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* 點擊提示與音效控制 */
-    .audio-hint {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 100;
-      background: rgba(0, 0, 0, 0.8);
-      border: 1px solid #fed530;
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      color: #4bd5ee;
-      cursor: pointer;
-    }
-
-    /* 1. 開場白動態 */
-    .intro {
-      position: absolute;
-      top: 45%;
-      font-size: 2rem;
-      color: #4bd5ee;
-      opacity: 0;
-      animation: intro 4s ease-out 1s forwards;
-      text-align: center;
-    }
-
-    /* 2. 主標題縮放效果 */
-    .title {
-      position: absolute;
-      top: 35%;
-      text-align: center;
-      opacity: 0;
-      transform: scale(8);
-      animation: logo 6s ease-out 5s forwards;
-    }
-
-    .title h1 {
-      font-size: 5rem;
-      margin: 0;
-      letter-spacing: 5px;
-      -webkit-text-stroke: 2px #fed530;
-      color: transparent;
-    }
-
-    .title h2 {
-      font-size: 2rem;
-      margin-top: 10px;
-    }
-
-    /* 3. 3D 透視與滾動容器 */
-    .star-wars-crawl {
-      display: flex;
-      justify-content: center;
-      position: relative;
-      width: 100%;
-      height: 100%;
-      perspective: 400px; /* 創造 3D 深度 */
-      font-size: 1.8rem;
-      font-weight: 600;
-      text-align: justify;
-    }
-
-    .crawl-content {
-      position: relative;
-      top: 9999px;
-      width: 65%;
-      max-width: 800px;
-      transform: rotateX(25deg); /* 向後傾斜角度 */
-      animation: crawl 45s linear 10s forwards;
-    }
-
-    .crawl-content .episode {
-      text-align: center;
-      font-size: 1.5rem;
-    }
-
-    .crawl-content .heading {
-      text-align: center;
-      font-size: 2.5rem;
-      margin-bottom: 30px;
-    }
-
-    .crawl-content p {
-      line-height: 1.8;
-      margin-bottom: 30px;
-    }
-
-    /* 點數榜樣式 */
-    .scoreboard {
-      margin-top: 50px;
-      border: 2px solid #fed530;
-      padding: 25px;
-      background: rgba(0, 0, 0, 0.85);
-      box-shadow: 0 0 15px rgba(254, 213, 48, 0.3);
-    }
-
-    .scoreboard h3 {
-      text-align: center;
-      margin-top: 0;
-      font-size: 2.2rem;
-      color: #fff;
-      text-shadow: 0 0 8px #fed530;
-    }
-
-    .scoreboard ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .scoreboard li {
-      display: flex;
-      justify-content: space-between;
-      margin: 15px 0;
-      border-bottom: 1px dashed #fed530;
-      padding-bottom: 8px;
-    }
-
-    /* 首頁按鈕區域 */
-    .enter-btn-container {
-      text-align: center;
-      margin-top: 40px;
-    }
-
-    .enter-btn {
-      display: inline-block;
-      padding: 15px 40px;
-      background: #fed530;
-      color: #000;
-      font-size: 1.5rem;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 5px;
-      box-shadow: 0 0 15px #fed530;
-      transition: all 0.3s ease;
-    }
-
-    .enter-btn:hover {
-      background: #fff;
-      box-shadow: 0 0 25px #fff;
-      transform: scale(1.05);
-    }
-
-    /* 動畫關鍵幀 (Keyframes) */
-    @keyframes intro {
-      0% { opacity: 0; }
-      20% { opacity: 1; }
-      80% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
-    @keyframes logo {
-      0% { opacity: 1; transform: scale(6); }
-      80% { opacity: 1; }
-      100% { opacity: 0; transform: scale(0.1); }
-    }
-
-    @keyframes crawl {
-      0% { top: 100%; transform: rotateX(20deg) translateZ(0); }
-      100% { top: -180%; transform: rotateX(25deg) translateZ(-2500px); }
-    }
-  </style>
+  <title>星際班級點數紀事錄</title>
 </head>
-<body onclick="playAudio()">
+<body style="background-color: #000; color: #fed530; font-family: sans-serif; text-align: center; padding: 50px;">
 
-  <!-- 音樂播放提示 -->
-  <div class="audio-hint" id="audio-hint">🎵 點擊任意處播放主題曲</div>
+  <h1 style="font-size: 3rem;">CLASS WAR</h1>
+  <h2 style="color: #fff;">三年二班：點數大反擊</h2>
+  <hr style="width: 50%; border-color: #fed530;">
 
-  <!-- 經典開場白 -->
-  <div class="intro">很久很久以前，在一個遙遠的教室裡...</div>
+  <p>很久很久以前，在一個遙遠的教室裡...</p>
+  <p>這是屬於本班的動盪時代，各組點數出現了前所未有的劇烈震盪！</p>
 
-  <!-- 班級標題 Logo -->
-  <div class="title">
-    <h1>CLASS WAR</h1>
-    <h2>三年二班：點數大反擊</h2>
+  <div style="border: 2px solid #fed530; width: 300px; margin: 30px auto; padding: 20px; background: #111;">
+    <h3>各組最新點數</h3>
+    <p>第一組：150 PTS</p>
+    <p>第二組：135 PTS</p>
+    <p>第三組：142 PTS</p>
+    <p>第四組：128 PTS</p>
   </div>
 
-  <!-- 3D 滾動字幕區域 -->
-  <div class="star-wars-crawl">
-    <div class="crawl-content">
-      <div class="episode">第 102 紀元</div>
-      <div class="heading">點數風雲再起</div>
-      
-      <p>這是屬於本班的動盪時代。在導師的嚴格監督與各組長的老謀深算下，班級點數排行榜出現了前所未有的劇烈震盪。</p>
-      
-      <p>第一組憑藉著高超的秩序維護術與作業繳交率，建立了強大的優勢；然而，第三組在掃地時間發動了秘密襲擊，奪得「最佳整潔」加分，直追而上。</p>
-      
-      <p>如今，隨著期末獎勵大賽的逼近，英雄們正準備發揮真正的潛能，奪取終極榮耀……</p>
+  <br><br>
 
-      <!-- 點數排行榜概要 -->
-      <div class="scoreboard">
-        <h3>各組最新點數戰報</h3>
-        <ul>
-          <li><span>第一組 (絕地武士)</span> <strong>150 PTS</strong></li>
-          <li><span>第二組 (賞金獵人)</span> <strong>135 PTS</strong></li>
-          <li><span>第三組 (反抗軍)</span> <strong>142 PTS</strong></li>
-          <li><span>第四組 (帝國突擊隊)</span> <strong>128 PTS</strong></li>
-        </ul>
-
-        <!-- 進入主系統的連結按鈕 -->
-        <div class="enter-btn-container">
-          <!-- 這裡已經幫您設定好連結到同一個目錄下的 main.html -->
-          <a href="main.html" class="enter-btn">進入完整點數系統</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 背景音樂 (連線至公開星戰風格配樂) -->
-  <audio id="bgm" loop>
-    <source src="https://ia801501.us.archive.org/21/items/StarWarsThemeSongByJohnWilliams/Star%20Wars%20Theme%20Song%20by%20John%20Williams.mp3" type="audio/mpeg">
-  </audio>
-
-  <script>
-    function playAudio() {
-      var audio = document.getElementById("bgm");
-      audio.play();
-      document.getElementById("audio-hint").innerText = "🎵 音效播放中";
-    }
-  </script>
+  <!-- 入口按鈕 -->
+  <a href="main.html" style="background: #fed530; color: #000; padding: 15px 30px; text-decoration: none; font-size: 1.5rem; font-weight: bold; border-radius: 5px; display: inline-block;">
+    👉 進入完整點數系統 (main.html)
+  </a>
 
 </body>
 </html>
