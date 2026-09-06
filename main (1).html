@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五己點數銀行｜班級點數與獎勵</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDF2ED;
+    --paper:#FFFFFF;
+    --ink:#14231D;
+    --ink-soft:#4B5C53;
+    --forest:#1D3B32;
+    --forest-dark:#122720;
+    --gold:#D8A73E;
+    --gold-soft:#F6E7BE;
+    --teal:#3E7C6F;
+    --coral:#C1503A;
+    --coral-soft:#F3DDD5;
+    --line:#D9E1D9;
+    --radius-card:16px;
+    --radius-pill:999px;
+    --shadow-soft: 0 1px 0 rgba(20,35,29,0.06);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;}
+  html,body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Nunito Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.brand,.hero-num{
+    font-family:'Fraunces', serif;
+    letter-spacing:-0.01em;
+  }
+  #app{min-height:100vh;display:flex;flex-direction:column;}
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;font-size:15px;}
+  a{color:inherit;}
+
+  .login-screen{
+    min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(216,167,62,0.16), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(62,124,111,0.14), transparent 45%),
+      var(--bg);
+  }
+  .login-card{
+    width:100%;max-width:420px;background:var(--paper);border-radius:20px;padding:36px 32px 28px;
+    box-shadow:0 20px 50px -30px rgba(18,39,32,0.4), var(--shadow-soft);border:1px solid var(--line);
+  }
+  .login-brand{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+  .login-brand .star{width:30px;height:30px;flex:none;}
+  .login-brand span{font-size:22px;font-weight:600;color:var(--forest);}
+  .login-sub{color:var(--ink-soft);font-size:14px;margin:0 0 24px;}
+  .role-switch{display:flex;background:var(--bg);border-radius:var(--radius-pill);padding:4px;margin-bottom:22px;}
+  .role-switch button{flex:1;border:none;background:transparent;padding:9px 0;border-radius:var(--radius-pill);font-weight:700;font-size:14px;color:var(--ink-soft);transition:background .15s, color .15s;}
+  .role-switch button.active{background:var(--forest);color:#fff;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+  .field input,.field select{width:100%;padding:11px 13px;border-radius:10px;border:1.5px solid var(--line);background:#FBFCFB;outline:none;}
+  .field input:focus,.field select:focus{border-color:var(--teal);background:#fff;}
+  .btn-primary{width:100%;background:var(--forest);color:#fff;border:none;padding:12px 0;border-radius:10px;font-weight:800;font-size:15px;margin-top:6px;}
+  .btn-primary:hover{background:var(--forest-dark);}
+  .btn-link{background:none;border:none;color:var(--teal);font-weight:700;font-size:13.5px;padding:0;}
+  .login-error{background:var(--coral-soft);color:var(--coral);padding:9px 12px;border-radius:8px;font-size:13.5px;font-weight:700;margin-bottom:14px;}
+  .login-foot{margin-top:20px;padding-top:16px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-soft);line-height:1.7;}
+  .login-toggle-row{text-align:center;margin-top:14px;}
+  .spinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--teal);animation:spin 0.8s linear infinite;margin:0 auto 16px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .topbar{display:flex;align-items:center;gap:14px;padding:12px 22px;background:var(--forest);color:#fff;}
+  .topbar .brand{font-size:18px;font-weight:600;display:flex;align-items:center;gap:8px;}
+  .topbar .brand .star{width:20px;height:20px;}
+  .topbar .meta{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:13.5px;}
+  .topbar select{background:rgba(255,255,255,0.14);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:6px 8px;}
+  .topbar select option{color:#111;}
+  .logout-btn{background:rgba(255,255,255,0.14);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;}
+  .logout-btn:hover{background:rgba(255,255,255,0.24);}
+
+  .avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;background:var(--gold-soft);color:#8A650F;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex:none;vertical-align:middle;}
+  .avatar-sm{width:28px;height:28px;font-size:12px;}
+  .avatar-btn{border:none;padding:0;cursor:pointer;background:none;display:inline-block;position:relative;}
+  .avatar-btn:hover .avatar{opacity:0.85;}
+  .avatar-btn::after{content:"✎";position:absolute;bottom:-2px;right:-2px;background:var(--gold);color:#3a2b06;width:14px;height:14px;border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;}
+
+  .layout{display:flex;flex:1;min-height:0;}
+  .tabrail{width:196px;flex:none;background:var(--paper);border-right:1px solid var(--line);padding:18px 0;}
+  .tabrail button{display:block;width:100%;text-align:left;padding:11px 20px;border:none;background:transparent;font-size:14.5px;font-weight:700;color:var(--ink-soft);position:relative;border-left:3px solid transparent;}
+  .tabrail button.active{color:var(--forest);background:var(--bg);border-left:3px solid var(--gold);}
+  .tabrail .count-badge{display:inline-block;min-width:18px;padding:0 5px;background:var(--coral);color:#fff;border-radius:var(--radius-pill);font-size:11px;text-align:center;margin-left:6px;}
+
+  main.content{flex:1;padding:26px 30px 60px;overflow-y:auto;}
+  .content h2{margin:0 0 4px;font-size:22px;color:var(--forest);}
+  .content .page-sub{color:var(--ink-soft);font-size:13.5px;margin:0 0 22px;}
+
+  .stat-strip{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:26px;}
+  .stat-tile{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-card);padding:16px 20px;min-width:140px;flex:1;}
+  .stat-tile .num{font-family:'Fraunces',serif;font-size:28px;color:var(--forest);}
+  .stat-tile .lab{font-size:12.5px;color:var(--ink-soft);font-weight:700;}
+
+  .ledger{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-card);overflow:hidden;}
+  .ledger-row{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);}
+  .ledger-row:last-child{border-bottom:none;}
+  .rank{width:26px;height:26px;border-radius:50%;background:var(--bg);color:var(--forest);font-weight:800;font-size:12.5px;display:flex;align-items:center;justify-content:center;flex:none;}
+  .ledger-row.top1 .rank{background:var(--gold);color:#fff;}
+  .ledger-name{font-weight:700;flex:1;}
+  .ledger-points{font-family:'Fraunces',serif;font-weight:600;color:var(--forest);font-size:16px;}
+
+  .star-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-soft);color:#8A650F;padding:3px 10px 3px 6px;border-radius:var(--radius-pill);font-weight:800;font-size:13px;}
+  .star-badge svg{width:16px;height:16px;}
+
+  .balance-hero{background:var(--forest);color:#fff;border-radius:20px;padding:26px 28px;display:flex;align-items:center;gap:20px;margin-bottom:24px;}
+  .balance-hero .star-big{width:56px;height:56px;flex:none;}
+  .balance-hero .hero-num{font-size:38px;font-weight:700;line-height:1;}
+  .balance-hero .hero-lab{font-size:13px;opacity:.8;font-weight:700;margin-top:4px;}
+  .balance-hero .hero-class{margin-left:auto;text-align:right;font-size:13px;opacity:.85;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius-card);padding:20px;}
+  .panel h3{margin:0 0 14px;font-size:16px;color:var(--forest);}
+
+  .item-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);}
+  .item-row:last-child{border-bottom:none;}
+  .pill-value{font-weight:800;font-size:13px;padding:3px 10px;border-radius:var(--radius-pill);}
+  .pill-value.pos{background:#E4F0EA;color:var(--teal);}
+  .pill-value.neg{background:var(--coral-soft);color:var(--coral);}
+
+  .reward-ticket{position:relative;background:var(--paper);border:1.5px dashed var(--gold);border-radius:14px;padding:16px 18px;margin-bottom:12px;}
+  .reward-ticket img.reward-img{width:100%;height:180px;object-fit:contain;background:var(--bg);border-radius:10px;margin-bottom:12px;display:block;}
+  .reward-ticket .rt-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;}
+  .reward-ticket h4{margin:0 0 4px;font-size:15.5px;color:var(--forest);}
+  .reward-ticket p{margin:0;font-size:13px;color:var(--ink-soft);}
+  .reward-ticket .cost{font-family:'Fraunces',serif;font-weight:600;color:#8A650F;font-size:16px;white-space:nowrap;}
+
+  .status-tag{display:inline-block;padding:3px 10px;border-radius:var(--radius-pill);font-size:12px;font-weight:800;}
+  .status-tag.pending{background:#FBF0D6;color:#8A650F;}
+  .status-tag.approved{background:#E4F0EA;color:var(--teal);}
+  .status-tag.rejected{background:var(--coral-soft);color:var(--coral);}
+
+  .btn-sm{border:none;border-radius:8px;padding:7px 13px;font-size:13px;font-weight:800;}
+  .btn-approve{background:var(--teal);color:#fff;}
+  .btn-reject{background:var(--coral-soft);color:var(--coral);}
+  .btn-ghost{background:var(--bg);color:var(--forest);}
+  .btn-gold{background:var(--gold);color:#fff;}
+
+  form.inline-form{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;align-items:flex-end;}
+  form.inline-form .field{margin-bottom:0;min-width:150px;flex:1;}
+  form.inline-form .field.small{min-width:100px;flex:none;width:110px;}
+
+  table.data-table{width:100%;border-collapse:collapse;}
+  table.data-table th{text-align:left;font-size:12px;color:var(--ink-soft);padding:8px 10px;border-bottom:1.5px solid var(--line);}
+  table.data-table td{padding:10px 10px;border-bottom:1px solid var(--line);font-size:14px;}
+  table.data-table tr:last-child td{border-bottom:none;}
+
+  .empty-state{text-align:center;padding:40px 20px;color:var(--ink-soft);}
+  .empty-state .star{width:34px;height:34px;margin-bottom:10px;opacity:.5;}
+
+  .modal-backdrop{position:fixed;inset:0;background:rgba(18,39,32,0.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;}
+  .modal{background:#fff;border-radius:16px;padding:24px;max-width:420px;width:100%;box-shadow:0 30px 60px -20px rgba(0,0,0,0.35);}
+  .modal h3{margin:0 0 16px;color:var(--forest);}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;}
+  .modal-preview{width:100%;max-height:150px;object-fit:cover;border-radius:10px;margin-bottom:10px;display:none;}
+
+  .review-card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-bottom:12px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .review-card .rc-info{flex:1;min-width:220px;}
+  .review-card .rc-info .who{font-weight:800;}
+  .review-card .rc-info .what{font-size:13.5px;color:var(--ink-soft);margin-top:2px;}
+  .review-card .rc-actions{display:flex;gap:8px;}
+
+  @media (max-width: 860px){
+    .layout{flex-direction:column;}
+    .tabrail{width:100%;display:flex;overflow-x:auto;padding:10px 8px;border-right:none;border-bottom:1px solid var(--line);gap:4px;}
+    .tabrail button{width:auto;white-space:nowrap;border-left:none;border-bottom:3px solid transparent;padding:8px 12px;}
+    .tabrail button.active{border-left:none;border-bottom:3px solid var(--gold);}
+    .grid-2{grid-template-columns:1fr;}
+    main.content{padding:18px 16px 50px;}
+    .topbar{flex-wrap:wrap;}
+    .topbar .meta{width:100%;justify-content:space-between;margin-left:0;margin-top:8px;}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import {
+    getDatabase, ref, set, update, remove, push, get, runTransaction, onValue
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  var firebaseConfig = {
+    apiKey: "AIzaSyBvp6YJnOpRSH7bUMDeZtaMwmkcVi_ldbk",
+    authDomain: "pointbank-44bf7.firebaseapp.com",
+    databaseURL: "https://pointbank-44bf7-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "pointbank-44bf7",
+    storageBucket: "pointbank-44bf7.firebasestorage.app",
+    messagingSenderId: "1025187906051",
+    appId: "1:1025187906051:web:5a8fe54c586fb85d798436",
+    measurementId: "G-W799Q5WBFG"
+  };
+
+  var app = initializeApp(firebaseConfig);
+  var db = getDatabase(app);
+  var ROOT = 'pointBookState';
+  var rootRef = ref(db, ROOT);
+
+  var STAR_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.14 6.6.72-4.9 4.6 1.3 6.54L12 17.6l-5.9 3.9 1.3-6.54-4.9-4.6 6.6-.72L12 2.5z"/></svg>';
+  var SESSION_KEY = 'pointbank_session';
+
+  var state = null;       // 從 Firebase 同步下來：{teachers,classes,students,pointItems,rewards,transactions,redemptions}（皆為 id 對應物件的 map）
+  var session = null;     // 本機登入狀態，各裝置獨立
+  var ui = { loginRole:'teacher', signupMode:false, teacherTab:'overview', currentClassId:null, modal:null, error:'' };
+
+  function uid(prefix){
+    return (prefix||'id') + '_' + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4);
+  }
+
+  /* ----- 本機 session ----- */
+  function loadSession(){
+    try{ session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }
+    catch(e){ session = null; }
+  }
+  function saveSession(){
+    try{
+      if(session) localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      else localStorage.removeItem(SESSION_KEY);
+    }catch(e){ /* 若無法儲存，登入狀態只在這次瀏覽期間有效 */ }
+  }
+  function logout(){ session = null; saveSession(); render(); }
+
+  /* ----- 預設示範資料（map 格式） ----- */
+  function defaultSeedTree(){
+    var teacherId = uid('t');
+    var classId = uid('c');
+    var s1=uid('s'), s2=uid('s'), s3=uid('s');
+    var pi1=uid('pi'), pi2=uid('pi'), pi3=uid('pi'), pi4=uid('pi');
+    var rw1=uid('rw'), rw2=uid('rw'), rw3=uid('rw');
+    var tree = { teachers:{}, classes:{}, students:{}, pointItems:{}, rewards:{}, transactions:{}, redemptions:{} };
+    tree.teachers[teacherId] = {username:'teacher', password:'1234', name:'王老師'};
+    tree.classes[classId] = {name:'五年三班', teacherId:teacherId};
+    tree.students[s1] = {username:'s1', password:'1234', name:'林小美', classId:classId, points:35};
+    tree.students[s2] = {username:'s2', password:'1234', name:'陳小華', classId:classId, points:20};
+    tree.students[s3] = {username:'s3', password:'1234', name:'張小強', classId:classId, points:12};
+    tree.pointItems[pi1] = {classId:classId, label:'上課主動發言', value:5};
+    tree.pointItems[pi2] = {classId:classId, label:'幫忙班務', value:3};
+    tree.pointItems[pi3] = {classId:classId, label:'作業遲交', value:-3};
+    tree.pointItems[pi4] = {classId:classId, label:'忘記帶作業', value:-2};
+    tree.rewards[rw1] = {classId:classId, name:'自由座位一天', cost:30, description:'可以選自己想坐的位置一整天'};
+    tree.rewards[rw2] = {classId:classId, name:'免寫回家作業一次', cost:50, description:'免寫一項回家作業'};
+    tree.rewards[rw3] = {classId:classId, name:'班級小禮物', cost:80, description:'兌換文具小禮物一份'};
+    return tree;
+  }
+
+  function toArr(mapObj){
+    if(!mapObj) return [];
+    return Object.keys(mapObj).map(function(k){
+      var item = {};
+      for(var key in mapObj[k]){ item[key] = mapObj[k][key]; }
+      item.id = k;
+      return item;
+    });
+  }
+  function snapshotToState(val){
+    val = val || {};
+    return {
+      teachers: toArr(val.teachers), classes: toArr(val.classes), students: toArr(val.students),
+      pointItems: toArr(val.pointItems), rewards: toArr(val.rewards),
+      transactions: toArr(val.transactions), redemptions: toArr(val.redemptions)
+    };
+  }
+
+  // 把舊版「整包陣列」格式轉成新版「各自獨立節點」格式，避免舊資料因結構調整而消失
+  function arrToMap(arr){
+    var map = {};
+    (arr||[]).forEach(function(item){
+      if(item && item.id){ map[item.id] = item; }
+    });
+    return map;
+  }
+  function isOldArrayFormat(val){
+    return val && Array.isArray(val.teachers);
+  }
+  function migrateOldFormat(val){
+    return {
+      teachers: arrToMap(val.teachers), classes: arrToMap(val.classes), students: arrToMap(val.students),
+      pointItems: arrToMap(val.pointItems), rewards: arrToMap(val.rewards),
+      transactions: arrToMap(val.transactions), redemptions: arrToMap(val.redemptions)
+    };
+  }
+
+  function dbErr(e){ alert('儲存時發生問題，請確認網路連線：\n'+(e&&e.message?e.message:e)); }
+
+  function avatarHtml(obj, extraClass){
+    var cls = 'avatar' + (extraClass ? (' '+extraClass) : '');
+    if(obj && obj.avatar){ return '<img class="'+cls+'" src="'+obj.avatar+'">'; }
+    var initial = obj && obj.name ? esc(obj.name.charAt(0)) : '?';
+    return '<span class="'+cls+'">'+initial+'</span>';
+  }
+
+  onValue(rootRef, function(snapshot){
+    var val = snapshot.val();
+    if(val === null){
+      set(rootRef, defaultSeedTree()).catch(dbErr);
+      return;
+    }
+    if(isOldArrayFormat(val)){
+      set(rootRef, migrateOldFormat(val)).catch(dbErr);
+      return; // 寫回後這個監聽會再次觸發，讀到新格式
+    }
+    state = snapshotToState(val);
+    render();
+  }, function(error){
+    var appEl = document.getElementById('app');
+    appEl.innerHTML = '<div class="login-screen"><div class="login-card"><div class="login-error">連線失敗：'+esc(error.message)+'</div><p class="login-sub">請確認網路連線與 Firebase 資料庫規則設定。</p></div></div>';
+  });
+
+  /* ---------------- helpers ---------------- */
+  function findTeacher(id){ return state.teachers.find(function(t){return t.id===id;}); }
+  function findStudent(id){ return state.students.find(function(s){return s.id===id;}); }
+  function findClass(id){ return state.classes.find(function(c){return c.id===id;}); }
+  function classesOfTeacher(tid){ return state.classes.filter(function(c){return c.teacherId===tid;}); }
+  function studentsOfClass(cid){ return state.students.filter(function(s){return s.classId===cid;}); }
+  function itemsOfClass(cid){ return state.pointItems.filter(function(i){return i.classId===cid;}); }
+  function rewardsOfClass(cid){ return state.rewards.filter(function(r){return r.classId===cid;}); }
+  function esc(str){
+    return String(str==null?'':str).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function fmtDate(ts){
+    var d = new Date(ts);
+    var pad = function(n){return n<10?'0'+n:n;};
+    return (d.getMonth()+1)+'/'+d.getDate()+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+  }
+  function pendingCountForClass(cid){
+    var a = state.transactions.filter(function(t){return t.classId===cid && t.status==='pending';}).length;
+    var b = state.redemptions.filter(function(r){return r.classId===cid && r.status==='pending';}).length;
+    return a+b;
+  }
+
+  /* ----- 圖片：讀取檔案並壓縮成小尺寸 dataURL，直接存進資料庫，不需另外找圖床 ----- */
+  function resizeImageFile(file, maxDim, quality, callback){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var img = new Image();
+      img.onload = function(){
+        var scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        var cw = Math.max(1, Math.round(img.width*scale));
+        var ch = Math.max(1, Math.round(img.height*scale));
+        var canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        canvas.getContext('2d').drawImage(img, 0, 0, cw, ch);
+        callback(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = function(){ callback(null); };
+      img.src = e.target.result;
+    };
+    reader.onerror = function(){ callback(null); };
+    reader.readAsDataURL(file);
+  }
+
+  /* ================= root render ================= */
+  function render(){
+    var appEl = document.getElementById('app');
+    if(state === null){
+      appEl.innerHTML = '<div class="login-screen"><div class="login-card" style="text-align:center;"><div class="spinner"></div><p style="color:var(--ink-soft);">連線到雲端資料庫中，請稍候…</p></div></div>';
+      return;
+    }
+    if(!session){ appEl.innerHTML = renderLogin(); bindLogin(); return; }
+    if(session.role === 'teacher'){ appEl.innerHTML = renderTeacherApp(); bindTeacherApp(); }
+    else { appEl.innerHTML = renderStudentApp(); bindStudentApp(); }
+  }
+
+  /* ================= LOGIN ================= */
+  function renderLogin(){
+    var roleIsTeacher = ui.loginRole === 'teacher';
+    var errorHtml = ui.error ? '<div class="login-error">'+esc(ui.error)+'</div>' : '';
+    var formHtml;
+    if(roleIsTeacher && ui.signupMode){
+      formHtml =
+        '<form id="signupForm">'+
+          '<div class="field"><label>老師姓名</label><input type="text" name="name" required placeholder="例如：王小美"></div>'+
+          '<div class="field"><label>帳號</label><input type="text" name="username" required placeholder="自訂帳號"></div>'+
+          '<div class="field"><label>密碼</label><input type="password" name="password" required placeholder="自訂密碼"></div>'+
+          '<button class="btn-primary" type="submit">建立老師帳號</button>'+
+        '</form>'+
+        '<div class="login-toggle-row"><button class="btn-link" id="toLogin">已經有帳號？回到登入</button></div>';
+    } else {
+      formHtml =
+        '<form id="loginForm">'+
+          '<div class="field"><label>帳號</label><input type="text" name="username" required placeholder="輸入帳號"></div>'+
+          '<div class="field"><label>密碼</label><input type="password" name="password" required placeholder="輸入密碼"></div>'+
+          '<button class="btn-primary" type="submit">登入</button>'+
+        '</form>'+
+        (roleIsTeacher ? '<div class="login-toggle-row"><button class="btn-link" id="toSignup">還沒有老師帳號？建立一個</button></div>' : '');
+    }
+    return (
+      '<div class="login-screen"><div class="login-card">'+
+        '<div class="login-brand"><span class="star" style="color:var(--gold)">'+STAR_SVG+'</span><span>五己點數銀行</span></div>'+
+        '<p class="login-sub">班級點數管理與獎勵兌換　·　雲端同步中</p>'+
+        '<div class="role-switch">'+
+          '<button data-role="teacher" class="'+(roleIsTeacher?'active':'')+'">老師登入</button>'+
+          '<button data-role="student" class="'+(!roleIsTeacher?'active':'')+'">學生登入</button>'+
+        '</div>'+
+        errorHtml+formHtml+
+        '<div class="login-foot">首次使用會自動建立示範帳號：teacher / 1234　建議登入後盡快修改</div>'+
+      '</div></div>'
+    );
+  }
+
+  function bindLogin(){
+    document.querySelectorAll('.role-switch button').forEach(function(btn){
+      btn.addEventListener('click', function(){ ui.loginRole=btn.getAttribute('data-role'); ui.signupMode=false; ui.error=''; render(); });
+    });
+    var toSignup = document.getElementById('toSignup');
+    if(toSignup) toSignup.addEventListener('click', function(){ ui.signupMode=true; ui.error=''; render(); });
+    var toLogin = document.getElementById('toLogin');
+    if(toLogin) toLogin.addEventListener('click', function(){ ui.signupMode=false; ui.error=''; render(); });
+
+    var loginForm = document.getElementById('loginForm');
+    if(loginForm) loginForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(loginForm);
+      var username=(fd.get('username')||'').trim(), password=(fd.get('password')||'').trim();
+      if(ui.loginRole==='teacher'){
+        var t = state.teachers.find(function(x){return x.username===username && x.password===password;});
+        if(!t){ ui.error='帳號或密碼不正確'; render(); return; }
+        session = {role:'teacher', id:t.id};
+        var cls = classesOfTeacher(t.id);
+        ui.currentClassId = cls.length ? cls[0].id : null;
+        ui.teacherTab = 'overview'; ui.error='';
+        saveSession(); render();
+      } else {
+        var s = state.students.find(function(x){return x.username===username && x.password===password;});
+        if(!s){ ui.error='帳號或密碼不正確'; render(); return; }
+        session = {role:'student', id:s.id};
+        ui.studentTab='overview'; ui.error='';
+        saveSession(); render();
+      }
+    });
+
+    var signupForm = document.getElementById('signupForm');
+    if(signupForm) signupForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(signupForm);
+      var name=(fd.get('name')||'').trim(), username=(fd.get('username')||'').trim(), password=(fd.get('password')||'').trim();
+      if(!name||!username||!password) return;
+      if(state.teachers.some(function(t){return t.username===username;})){ ui.error='這個帳號已經被使用了'; render(); return; }
+      var newId = uid('t');
+      set(ref(db, ROOT+'/teachers/'+newId), {username:username, password:password, name:name}).then(function(){
+        session = {role:'teacher', id:newId};
+        ui.currentClassId=null; ui.teacherTab='overview'; ui.signupMode=false; ui.error='';
+        saveSession(); render();
+      }).catch(function(e){ ui.error='建立失敗：'+e.message; render(); });
+    });
+  }
+
+  /* ================= TEACHER APP ================= */
+  function renderTeacherApp(){
+    var teacher = findTeacher(session.id);
+    if(!teacher){
+      return '<div class="login-screen"><div class="login-card" style="text-align:center;"><div class="spinner"></div><p style="color:var(--ink-soft);">資料同步中，請稍候…</p></div></div>';
+    }
+    var classes = classesOfTeacher(teacher.id);
+    if(!ui.currentClassId || !findClass(ui.currentClassId) || findClass(ui.currentClassId).teacherId!==teacher.id){
+      ui.currentClassId = classes.length ? classes[0].id : null;
+    }
+    var cid = ui.currentClassId;
+    var classOptions = classes.map(function(c){
+      return '<option value="'+c.id+'" '+(c.id===cid?'selected':'')+'>'+esc(c.name)+'</option>';
+    }).join('') + '<option value="__new__">＋ 新增班級</option>';
+    var pendingCount = cid ? pendingCountForClass(cid) : 0;
+    var tabs = [
+      {key:'overview', label:'總覽'}, {key:'students', label:'學生管理'},
+      {key:'items', label:'點數項目'}, {key:'rewards', label:'獎勵清單'},
+      {key:'review', label:'待審核中心', badge:pendingCount}
+    ];
+    var tabsHtml = tabs.map(function(t){
+      return '<button data-tab="'+t.key+'" class="'+(ui.teacherTab===t.key?'active':'')+'">'+t.label+
+        (t.badge ? '<span class="count-badge">'+t.badge+'</span>' : '')+'</button>';
+    }).join('');
+    var body = '';
+    if(!cid){
+      body = '<div class="empty-state"><div class="star" style="color:var(--gold)">'+STAR_SVG+'</div><p>你還沒有任何班級，先建立一個班級開始使用吧。</p>'+
+        '<button class="btn-primary" style="max-width:200px;margin:0 auto;" id="emptyAddClassBtn">＋ 新增班級</button></div>';
+    } else if(ui.teacherTab==='overview') body = renderOverviewTab(cid);
+    else if(ui.teacherTab==='students') body = renderStudentsTab(cid);
+    else if(ui.teacherTab==='items') body = renderItemsTab(cid);
+    else if(ui.teacherTab==='rewards') body = renderRewardsTab(cid);
+    else if(ui.teacherTab==='review') body = renderReviewTab(cid);
+
+    return (
+      '<div class="topbar">'+
+        '<div class="brand"><span class="star" style="color:var(--gold)">'+STAR_SVG+'</span>五己點數銀行</div>'+
+        '<div class="meta"><select id="classSelect">'+classOptions+'</select>'+
+          '<label class="avatar-btn" title="點一下更換頭像">'+avatarHtml(teacher)+'<input type="file" accept="image/*" data-action="upload-avatar" style="display:none;"></label>'+
+          '<span>'+esc(teacher.name)+' 老師</span>'+
+          '<button class="logout-btn" id="logoutBtn">登出</button></div>'+
+      '</div>'+
+      '<div class="layout"><nav class="tabrail">'+tabsHtml+'</nav><main class="content">'+body+'</main></div>'+
+      (ui.modal ? renderModal() : '')
+    );
+  }
+
+  function renderOverviewTab(cid){
+    var cls = findClass(cid);
+    var students = studentsOfClass(cid).slice().sort(function(a,b){return b.points-a.points;});
+    var pending = pendingCountForClass(cid);
+    var weekAgo = Date.now() - 7*24*60*60*1000;
+    var weekCount = state.transactions.filter(function(t){return t.classId===cid && t.status==='approved' && t.createdAt>=weekAgo;}).length;
+    var rows = students.length ? students.map(function(s, idx){
+      return '<div class="ledger-row '+(idx===0?'top1':'')+'"><div class="rank">'+(idx+1)+'</div>'+
+        avatarHtml(s,'avatar-sm')+
+        '<div class="ledger-name">'+esc(s.name)+'</div><div class="ledger-points">'+s.points+' 點</div></div>';
+    }).join('') : '<div class="empty-state">這個班級還沒有學生，到「學生管理」新增第一位吧。</div>';
+    return (
+      '<h2>'+esc(cls.name)+'　總覽</h2><p class="page-sub">班級點數排行榜與快速統計</p>'+
+      '<div class="stat-strip">'+
+        '<div class="stat-tile"><div class="num">'+students.length+'</div><div class="lab">班級學生人數</div></div>'+
+        '<div class="stat-tile"><div class="num">'+weekCount+'</div><div class="lab">本週已核准加減分</div></div>'+
+        '<div class="stat-tile"><div class="num">'+pending+'</div><div class="lab">待審核申請</div></div>'+
+      '</div><div class="ledger">'+rows+'</div>'
+    );
+  }
+
+  function renderStudentsTab(cid){
+    if(!ui.selectedStudentIds) ui.selectedStudentIds = [];
+    var students = studentsOfClass(cid).slice().sort(function(a,b){return a.name.localeCompare(b.name,'zh-Hant');});
+    var validIds = students.map(function(s){return s.id;});
+    ui.selectedStudentIds = ui.selectedStudentIds.filter(function(id){return validIds.indexOf(id)!==-1;});
+    var allSelected = students.length>0 && ui.selectedStudentIds.length===students.length;
+    var rows = students.length ? students.map(function(s){
+      var checked = ui.selectedStudentIds.indexOf(s.id)!==-1;
+      return '<tr><td><input type="checkbox" class="student-select" data-id="'+s.id+'" '+(checked?'checked':'')+'></td>'+
+        '<td>'+avatarHtml(s,'avatar-sm')+'</td><td>'+esc(s.name)+'</td><td style="color:var(--ink-soft);">'+esc(s.username)+'</td>'+
+        '<td><span class="star-badge">'+STAR_SVG.replace('<svg ','<svg width="14" height="14" ')+' '+s.points+'</span></td>'+
+        '<td style="text-align:right;white-space:nowrap;">'+
+          '<button class="btn-sm btn-ghost" data-action="adjust" data-id="'+s.id+'">加減分</button> '+
+          '<button class="btn-sm btn-ghost" data-action="change-password" data-id="'+s.id+'">修改密碼</button> '+
+          '<button class="btn-sm btn-reject" data-action="delete-student" data-id="'+s.id+'">移除</button>'+
+        '</td></tr>';
+    }).join('') : '<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:24px 0;">還沒有學生，先在下方新增。</td></tr>';
+    return (
+      '<h2>學生管理</h2><p class="page-sub">新增學生帳號、查看與調整點數、修改密碼</p>'+
+      '<div class="panel" style="margin-bottom:20px;"><h3>新增學生</h3>'+
+        '<form class="inline-form" id="addStudentForm">'+
+          '<div class="field"><label>學生姓名</label><input type="text" name="name" required placeholder="例如：林小美"></div>'+
+          '<div class="field"><label>登入帳號</label><input type="text" name="username" required placeholder="自訂帳號"></div>'+
+          '<div class="field"><label>登入密碼</label><input type="text" name="password" required placeholder="自訂密碼"></div>'+
+          '<button class="btn-primary" style="width:auto;padding:11px 20px;" type="submit">新增</button>'+
+        '</form></div>'+
+      '<div class="panel">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;">'+
+          '<span style="font-size:13.5px;color:var(--ink-soft);">已選擇 <b style="color:var(--forest);">'+ui.selectedStudentIds.length+'</b> 位學生</span>'+
+          '<button class="btn-sm btn-gold" id="batchAdjustBtn">批次加減分</button>'+
+        '</div>'+
+        '<table class="data-table"><thead><tr><th><input type="checkbox" id="selectAllStudents" '+(allSelected?'checked':'')+'></th><th></th><th>姓名</th><th>帳號</th><th>目前點數</th><th></th></tr></thead>'+
+        '<tbody>'+rows+'</tbody></table></div>'
+    );
+  }
+
+
+  function renderItemsTab(cid){
+    var items = itemsOfClass(cid);
+    var rows = items.length ? items.map(function(i){
+      return '<div class="item-row"><div style="flex:1;font-weight:700;">'+esc(i.label)+'</div>'+
+        '<div class="pill-value '+(i.value>=0?'pos':'neg')+'">'+(i.value>=0?'+':'')+i.value+'</div>'+
+        '<button class="btn-sm btn-reject" data-action="delete-item" data-id="'+i.id+'">刪除</button></div>';
+    }).join('') : '<div class="empty-state">還沒有常用項目，新增後可以在加減分時快速套用。</div>';
+    return (
+      '<h2>點數項目</h2><p class="page-sub">設定常用的加減分項目，加減分時可以快速套用</p>'+
+      '<div class="panel" style="margin-bottom:20px;"><h3>新增項目</h3>'+
+        '<form class="inline-form" id="addItemForm">'+
+          '<div class="field"><label>項目名稱</label><input type="text" name="label" required placeholder="例如：上課主動發言"></div>'+
+          '<div class="field small"><label>點數(可負)</label><input type="number" name="value" required placeholder="5"></div>'+
+          '<button class="btn-primary" style="width:auto;padding:11px 20px;" type="submit">新增</button>'+
+        '</form></div><div class="panel">'+rows+'</div>'
+    );
+  }
+
+  function renderRewardsTab(cid){
+    var rewards = rewardsOfClass(cid);
+    var rows = rewards.length ? rewards.map(function(r){
+      return '<div class="reward-ticket">'+
+        (r.image ? '<img class="reward-img" src="'+r.image+'">' : '')+
+        '<div class="rt-top"><div><h4>'+esc(r.name)+'</h4><p>'+esc(r.description||'')+'</p></div><div class="cost">'+r.cost+' 點</div></div>'+
+        '<div style="margin-top:10px;text-align:right;">'+
+          '<label class="btn-sm btn-ghost" style="display:inline-block;">'+(r.image?'更換圖片':'新增圖片')+
+            '<input type="file" accept="image/*" data-action="reward-image" data-id="'+r.id+'" style="display:none;"></label> '+
+          '<button class="btn-sm btn-reject" data-action="delete-reward" data-id="'+r.id+'">刪除</button>'+
+        '</div></div>';
+    }).join('') : '<div class="empty-state">還沒有獎勵項目，新增後學生就可以用點數兌換。</div>';
+    return (
+      '<h2>獎勵清單</h2><p class="page-sub">設定學生可以用點數兌換的獎勵，可以上傳自己拍的照片</p>'+
+      '<div class="panel" style="margin-bottom:20px;"><h3>新增獎勵</h3>'+
+        '<form class="inline-form" id="addRewardForm">'+
+          '<div class="field"><label>獎勵名稱</label><input type="text" name="name" required placeholder="例如：自由座位一天"></div>'+
+          '<div class="field small"><label>所需點數</label><input type="number" name="cost" min="1" required placeholder="30"></div>'+
+          '<div class="field"><label>說明（選填）</label><input type="text" name="description" placeholder="簡單說明這個獎勵"></div>'+
+          '<div class="field"><label>圖片（選填）</label><input type="file" name="image" accept="image/*"></div>'+
+          '<button class="btn-primary" style="width:auto;padding:11px 20px;" type="submit">新增</button>'+
+        '</form></div><div>'+rows+'</div>'
+    );
+  }
+
+  function renderReviewTab(cid){
+    var reqs = state.transactions.filter(function(t){return t.classId===cid && t.status==='pending';}).sort(function(a,b){return a.createdAt-b.createdAt;});
+    var reds = state.redemptions.filter(function(r){return r.classId===cid && r.status==='pending';}).sort(function(a,b){return a.createdAt-b.createdAt;});
+    var reqHtml = reqs.map(function(t){
+      var s = findStudent(t.studentId);
+      return '<div class="review-card"><div class="rc-info"><div class="who">'+esc(s?s.name:'未知學生')+'　申請加分</div>'+
+        '<div class="what">'+esc(t.reason)+'　·　建議 '+(t.value>=0?'+':'')+t.value+' 點　·　'+fmtDate(t.createdAt)+'</div></div>'+
+        '<div class="rc-actions"><button class="btn-sm btn-approve" data-action="approve-tx" data-id="'+t.id+'">通過</button>'+
+        '<button class="btn-sm btn-reject" data-action="reject-tx" data-id="'+t.id+'">退回</button></div></div>';
+    }).join('');
+    var redHtml = reds.map(function(r){
+      var s = findStudent(r.studentId);
+      var rw = state.rewards.find(function(x){return x.id===r.rewardId;});
+      return '<div class="review-card"><div class="rc-info"><div class="who">'+esc(s?s.name:'未知學生')+'　申請兌換</div>'+
+        '<div class="what">'+esc(rw?rw.name:'（獎勵已刪除）')+'　·　需要 '+(rw?rw.cost:'?')+' 點　·　'+fmtDate(r.createdAt)+'</div></div>'+
+        '<div class="rc-actions"><button class="btn-sm btn-approve" data-action="approve-red" data-id="'+r.id+'">通過</button>'+
+        '<button class="btn-sm btn-reject" data-action="reject-red" data-id="'+r.id+'">退回</button></div></div>';
+    }).join('');
+    return (
+      '<h2>待審核中心</h2><p class="page-sub">集中處理學生提出的加分申請與兌換申請</p>'+
+      (reqHtml ? '<h3 style="font-size:14px;color:var(--ink-soft);margin:18px 0 8px;">加分申請</h3>' : '')+reqHtml+
+      (redHtml ? '<h3 style="font-size:14px;color:var(--ink-soft);margin:18px 0 8px;">兌換申請</h3>' : '')+redHtml+
+      (!reqHtml && !redHtml ? '<div class="empty-state"><div class="star" style="color:var(--gold)">'+STAR_SVG+'</div>目前沒有待審核的項目</div>' : '')
+    );
+  }
+
+  function renderModal(){
+    if(ui.modal.type === 'add-class'){
+      return '<div class="modal-backdrop"><div class="modal"><h3>新增班級</h3><form id="addClassForm">'+
+        '<div class="field"><label>班級名稱</label><input type="text" name="name" required placeholder="例如：五年三班"></div>'+
+        '<div class="modal-actions"><button type="button" class="btn-sm btn-ghost" id="modalCancel">取消</button>'+
+        '<button type="submit" class="btn-sm btn-approve">建立</button></div></form></div></div>';
+    }
+    if(ui.modal.type === 'adjust-points'){
+      var s = findStudent(ui.modal.studentId);
+      if(!s) return '';
+      var items = itemsOfClass(s.classId);
+      var itemOptions = '<option value="">自訂點數</option>' + items.map(function(i){
+        return '<option value="'+i.id+'">'+esc(i.label)+'（'+(i.value>=0?'+':'')+i.value+'）</option>';
+      }).join('');
+      return '<div class="modal-backdrop"><div class="modal"><h3>調整「'+esc(s.name)+'」的點數</h3><form id="adjustForm">'+
+        '<div class="field"><label>選擇常用項目</label><select name="itemId">'+itemOptions+'</select></div>'+
+        '<div class="field"><label>點數（正數加分，負數扣分）</label><input type="number" name="value" placeholder="輸入點數"></div>'+
+        '<div class="field"><label>原因說明</label><input type="text" name="reason" placeholder="例如：主動幫忙整理教室"></div>'+
+        '<div class="modal-actions"><button type="button" class="btn-sm btn-ghost" id="modalCancel">取消</button>'+
+        '<button type="submit" class="btn-sm btn-approve">確認送出</button></div></form></div></div>';
+    }
+    if(ui.modal.type === 'change-password'){
+      var s2 = findStudent(ui.modal.studentId);
+      if(!s2) return '';
+      return '<div class="modal-backdrop"><div class="modal"><h3>修改「'+esc(s2.name)+'」的密碼</h3><form id="changePasswordForm">'+
+        '<div class="field"><label>新密碼（目前：'+esc(s2.password)+'）</label><input type="text" name="password" required value="'+esc(s2.password)+'"></div>'+
+        '<div class="modal-actions"><button type="button" class="btn-sm btn-ghost" id="modalCancel">取消</button>'+
+        '<button type="submit" class="btn-sm btn-approve">儲存</button></div></form></div></div>';
+    }
+    if(ui.modal.type === 'batch-adjust'){
+      var ids = ui.selectedStudentIds || [];
+      var names = ids.map(function(id){ var s=findStudent(id); return s?s.name:''; }).filter(Boolean);
+      var items2 = itemsOfClass(ui.currentClassId);
+      var itemOptions2 = '<option value="">自訂點數</option>' + items2.map(function(i){
+        return '<option value="'+i.id+'">'+esc(i.label)+'（'+(i.value>=0?'+':'')+i.value+'）</option>';
+      }).join('');
+      return '<div class="modal-backdrop"><div class="modal"><h3>批次加減分</h3>'+
+        '<p class="page-sub" style="margin:0 0 14px;">將對以下 '+names.length+' 位學生套用同樣的點數：'+esc(names.join('、'))+'</p>'+
+        '<form id="batchAdjustForm">'+
+        '<div class="field"><label>選擇常用項目</label><select name="itemId">'+itemOptions2+'</select></div>'+
+        '<div class="field"><label>點數（正數加分，負數扣分）</label><input type="number" name="value" placeholder="輸入點數"></div>'+
+        '<div class="field"><label>原因說明</label><input type="text" name="reason" placeholder="例如：小組合作表現優異"></div>'+
+        '<div class="modal-actions"><button type="button" class="btn-sm btn-ghost" id="modalCancel">取消</button>'+
+        '<button type="submit" class="btn-sm btn-approve">確認送出</button></div></form></div></div>';
+    }
+    return '';
+  }
+
+  function bindTeacherApp(){
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    var teacherAvatarInput = document.querySelector('[data-action="upload-avatar"]');
+    if(teacherAvatarInput) teacherAvatarInput.addEventListener('change', function(){
+      var file = teacherAvatarInput.files && teacherAvatarInput.files[0];
+      if(!file) return;
+      resizeImageFile(file, 200, 0.8, function(dataUrl){
+        if(dataUrl) update(ref(db, ROOT+'/teachers/'+session.id), {avatar:dataUrl}).catch(dbErr);
+      });
+    });
+    var classSelect = document.getElementById('classSelect');
+    if(classSelect) classSelect.addEventListener('change', function(){
+      if(classSelect.value === '__new__'){ ui.modal={type:'add-class'}; render(); return; }
+      ui.currentClassId = classSelect.value; render();
+    });
+    document.querySelectorAll('.tabrail button[data-tab]').forEach(function(btn){
+      btn.addEventListener('click', function(){ ui.teacherTab = btn.getAttribute('data-tab'); render(); });
+    });
+    var emptyAddClassBtn = document.getElementById('emptyAddClassBtn');
+    if(emptyAddClassBtn) emptyAddClassBtn.addEventListener('click', function(){ ui.modal={type:'add-class'}; render(); });
+
+    var addStudentForm = document.getElementById('addStudentForm');
+    if(addStudentForm) addStudentForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(addStudentForm);
+      var name=(fd.get('name')||'').trim(), username=(fd.get('username')||'').trim(), password=(fd.get('password')||'').trim();
+      if(!name||!username||!password) return;
+      if(state.students.some(function(s){return s.username===username;})){ alert('這個帳號已經被使用了，請換一個帳號'); return; }
+      set(ref(db, ROOT+'/students/'+uid('s')), {username:username, password:password, name:name, classId:ui.currentClassId, points:0}).catch(dbErr);
+    });
+
+    document.querySelectorAll('[data-action="delete-student"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-id');
+        var s = findStudent(id);
+        if(!confirm('確定要移除「'+s.name+'」嗎？相關紀錄也會一併刪除。')) return;
+        remove(ref(db, ROOT+'/students/'+id)).catch(dbErr);
+        state.transactions.filter(function(x){return x.studentId===id;}).forEach(function(x){ remove(ref(db, ROOT+'/transactions/'+x.id)); });
+        state.redemptions.filter(function(x){return x.studentId===id;}).forEach(function(x){ remove(ref(db, ROOT+'/redemptions/'+x.id)); });
+      });
+    });
+
+    document.querySelectorAll('[data-action="adjust"]').forEach(function(btn){
+      btn.addEventListener('click', function(){ ui.modal={type:'adjust-points', studentId:btn.getAttribute('data-id')}; render(); });
+    });
+    document.querySelectorAll('[data-action="change-password"]').forEach(function(btn){
+      btn.addEventListener('click', function(){ ui.modal={type:'change-password', studentId:btn.getAttribute('data-id')}; render(); });
+    });
+
+    var selectAllStudents = document.getElementById('selectAllStudents');
+    if(selectAllStudents) selectAllStudents.addEventListener('change', function(){
+      if(selectAllStudents.checked){
+        ui.selectedStudentIds = studentsOfClass(ui.currentClassId).map(function(s){return s.id;});
+      } else {
+        ui.selectedStudentIds = [];
+      }
+      render();
+    });
+    document.querySelectorAll('.student-select').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        var id = cb.getAttribute('data-id');
+        if(!ui.selectedStudentIds) ui.selectedStudentIds = [];
+        var idx = ui.selectedStudentIds.indexOf(id);
+        if(cb.checked && idx===-1) ui.selectedStudentIds.push(id);
+        else if(!cb.checked && idx!==-1) ui.selectedStudentIds.splice(idx,1);
+        render();
+      });
+    });
+    var batchAdjustBtn = document.getElementById('batchAdjustBtn');
+    if(batchAdjustBtn) batchAdjustBtn.addEventListener('click', function(){
+      if(!ui.selectedStudentIds || ui.selectedStudentIds.length===0){ alert('請先勾選至少一位學生'); return; }
+      ui.modal = {type:'batch-adjust'};
+      render();
+    });
+
+    var addItemForm = document.getElementById('addItemForm');
+    if(addItemForm) addItemForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(addItemForm);
+      var label=(fd.get('label')||'').trim(); var value = parseInt(fd.get('value'),10);
+      if(!label || isNaN(value)) return;
+      set(ref(db, ROOT+'/pointItems/'+uid('pi')), {classId:ui.currentClassId, label:label, value:value}).catch(dbErr);
+    });
+    document.querySelectorAll('[data-action="delete-item"]').forEach(function(btn){
+      btn.addEventListener('click', function(){ remove(ref(db, ROOT+'/pointItems/'+btn.getAttribute('data-id'))).catch(dbErr); });
+    });
+
+    var addRewardForm = document.getElementById('addRewardForm');
+    if(addRewardForm) addRewardForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(addRewardForm);
+      var name=(fd.get('name')||'').trim(); var cost=parseInt(fd.get('cost'),10); var description=(fd.get('description')||'').trim();
+      var file = fd.get('image');
+      if(!name || isNaN(cost) || cost<=0) return;
+      function writeReward(imageDataUrl){
+        var data = {classId:ui.currentClassId, name:name, cost:cost, description:description};
+        if(imageDataUrl) data.image = imageDataUrl;
+        set(ref(db, ROOT+'/rewards/'+uid('rw')), data).catch(dbErr);
+      }
+      if(file && file.size > 0){ resizeImageFile(file, 480, 0.72, writeReward); }
+      else { writeReward(null); }
+    });
+    document.querySelectorAll('[data-action="delete-reward"]').forEach(function(btn){
+      btn.addEventListener('click', function(){ remove(ref(db, ROOT+'/rewards/'+btn.getAttribute('data-id'))).catch(dbErr); });
+    });
+    document.querySelectorAll('[data-action="reward-image"]').forEach(function(input){
+      input.addEventListener('change', function(){
+        var file = input.files && input.files[0];
+        var id = input.getAttribute('data-id');
+        if(!file) return;
+        resizeImageFile(file, 480, 0.72, function(dataUrl){
+          if(dataUrl) update(ref(db, ROOT+'/rewards/'+id), {image:dataUrl}).catch(dbErr);
+        });
+      });
+    });
+
+    document.querySelectorAll('[data-action="approve-tx"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var t = state.transactions.find(function(x){return x.id===btn.getAttribute('data-id');});
+        runTransaction(ref(db, ROOT+'/students/'+t.studentId+'/points'), function(cur){ return (cur||0) + t.value; });
+        update(ref(db, ROOT+'/transactions/'+t.id), {status:'approved', reviewedAt:Date.now()}).catch(dbErr);
+      });
+    });
+    document.querySelectorAll('[data-action="reject-tx"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        update(ref(db, ROOT+'/transactions/'+btn.getAttribute('data-id')), {status:'rejected', reviewedAt:Date.now()}).catch(dbErr);
+      });
+    });
+    document.querySelectorAll('[data-action="approve-red"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var r = state.redemptions.find(function(x){return x.id===btn.getAttribute('data-id');});
+        var rw = state.rewards.find(function(x){return x.id===r.rewardId;});
+        var cost = rw ? rw.cost : 0;
+        runTransaction(ref(db, ROOT+'/students/'+r.studentId+'/points'), function(cur){
+          cur = cur||0;
+          if(cur < cost) return; // 中止：點數不足
+          return cur - cost;
+        }).then(function(result){
+          if(!result.committed){ alert('學生目前的點數不足，兌換未通過。'); return; }
+          update(ref(db, ROOT+'/redemptions/'+r.id), {status:'approved', reviewedAt:Date.now()}).catch(dbErr);
+        }).catch(dbErr);
+      });
+    });
+    document.querySelectorAll('[data-action="reject-red"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        update(ref(db, ROOT+'/redemptions/'+btn.getAttribute('data-id')), {status:'rejected', reviewedAt:Date.now()}).catch(dbErr);
+      });
+    });
+
+    var modalCancel = document.getElementById('modalCancel');
+    if(modalCancel) modalCancel.addEventListener('click', function(){ ui.modal=null; render(); });
+
+    var addClassForm = document.getElementById('addClassForm');
+    if(addClassForm) addClassForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(addClassForm);
+      var name = (fd.get('name')||'').trim();
+      if(!name) return;
+      var newId = uid('c');
+      set(ref(db, ROOT+'/classes/'+newId), {name:name, teacherId:session.id}).catch(dbErr);
+      ui.currentClassId = newId; ui.modal = null; render();
+    });
+
+    var adjustForm = document.getElementById('adjustForm');
+    if(adjustForm) adjustForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(adjustForm);
+      var itemId = fd.get('itemId'); var value = parseInt(fd.get('value'),10); var reason=(fd.get('reason')||'').trim();
+      var item = itemId ? state.pointItems.find(function(i){return i.id===itemId;}) : null;
+      if(item){ value = item.value; if(!reason) reason = item.label; }
+      if(isNaN(value) || value===0){ alert('請輸入點數，或選擇一個常用項目'); return; }
+      if(!reason) reason = value>0 ? '老師加分' : '老師扣分';
+      var s = findStudent(ui.modal.studentId);
+      runTransaction(ref(db, ROOT+'/students/'+s.id+'/points'), function(cur){ return (cur||0) + value; });
+      set(ref(db, ROOT+'/transactions/'+uid('tx')), {
+        studentId:s.id, classId:s.classId, type:'manual', reason:reason, value:value,
+        status:'approved', createdAt:Date.now(), reviewedAt:Date.now()
+      }).catch(dbErr);
+      ui.modal = null; render();
+    });
+
+    var changePasswordForm = document.getElementById('changePasswordForm');
+    if(changePasswordForm) changePasswordForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(changePasswordForm);
+      var password = (fd.get('password')||'').trim();
+      if(!password) return;
+      update(ref(db, ROOT+'/students/'+ui.modal.studentId), {password:password}).catch(dbErr);
+      ui.modal = null; render();
+    });
+
+    var batchAdjustForm = document.getElementById('batchAdjustForm');
+    if(batchAdjustForm) batchAdjustForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(batchAdjustForm);
+      var itemId = fd.get('itemId'); var value = parseInt(fd.get('value'),10); var reason=(fd.get('reason')||'').trim();
+      var item = itemId ? state.pointItems.find(function(i){return i.id===itemId;}) : null;
+      if(item){ value = item.value; if(!reason) reason = item.label; }
+      if(isNaN(value) || value===0){ alert('請輸入點數，或選擇一個常用項目'); return; }
+      if(!reason) reason = value>0 ? '老師加分' : '老師扣分';
+      var ids = (ui.selectedStudentIds || []).slice();
+      ids.forEach(function(sid){
+        var s = findStudent(sid);
+        if(!s) return;
+        runTransaction(ref(db, ROOT+'/students/'+sid+'/points'), function(cur){ return (cur||0) + value; });
+        set(ref(db, ROOT+'/transactions/'+uid('tx')), {
+          studentId:sid, classId:s.classId, type:'manual', reason:reason, value:value,
+          status:'approved', createdAt:Date.now(), reviewedAt:Date.now()
+        }).catch(dbErr);
+      });
+      ui.selectedStudentIds = [];
+      ui.modal = null; render();
+    });
+  }
+
+  /* ================= STUDENT APP ================= */
+  function renderStudentApp(){
+    var student = findStudent(session.id);
+    if(!student){
+      return '<div class="login-screen"><div class="login-card" style="text-align:center;"><div class="spinner"></div><p style="color:var(--ink-soft);">資料同步中，請稍候…</p></div></div>';
+    }
+    var cls = findClass(student.classId);
+    var tabs = [
+      {key:'overview', label:'總覽'}, {key:'request', label:'申請加分'},
+      {key:'rewards', label:'兌換獎勵'}, {key:'history', label:'我的紀錄'}
+    ];
+    if(!ui.studentTab) ui.studentTab = 'overview';
+    var tabsHtml = tabs.map(function(t){ return '<button data-tab="'+t.key+'" class="'+(ui.studentTab===t.key?'active':'')+'">'+t.label+'</button>'; }).join('');
+    var body = '';
+    if(ui.studentTab==='overview') body = renderStudentOverview(student);
+    else if(ui.studentTab==='request') body = renderStudentRequest(student);
+    else if(ui.studentTab==='rewards') body = renderStudentRewards(student);
+    else if(ui.studentTab==='history') body = renderStudentHistory(student);
+    return (
+      '<div class="topbar"><div class="brand"><span class="star" style="color:var(--gold)">'+STAR_SVG+'</span>五己點數銀行</div>'+
+      '<div class="meta"><span>'+esc(cls?cls.name:'')+'</span>'+
+      '<label class="avatar-btn" title="點一下更換頭像">'+avatarHtml(student)+'<input type="file" accept="image/*" data-action="upload-avatar" style="display:none;"></label>'+
+      '<span>'+esc(student.name)+'</span>'+
+      '<button class="logout-btn" id="logoutBtn">登出</button></div></div>'+
+      '<div class="layout"><nav class="tabrail">'+tabsHtml+'</nav><main class="content">'+body+'</main></div>'
+    );
+  }
+
+  function renderStudentOverview(student){
+    var recent = state.transactions.filter(function(t){return t.studentId===student.id;}).sort(function(a,b){return b.createdAt-a.createdAt;}).slice(0,6);
+    var rows = recent.length ? recent.map(function(t){
+      return '<div class="ledger-row"><div class="ledger-name">'+esc(t.reason)+'<div style="font-size:12px;color:var(--ink-soft);font-weight:400;">'+fmtDate(t.createdAt)+'</div></div>'+
+        (t.status==='pending' ? '<span class="status-tag pending">待審核</span>' :
+         t.status==='rejected' ? '<span class="status-tag rejected">已退回</span>' :
+         '<div class="ledger-points">'+(t.value>=0?'+':'')+t.value+'</div>')+'</div>';
+    }).join('') : '<div class="empty-state">還沒有任何點數紀錄</div>';
+    return (
+      '<div class="balance-hero"><span class="star-big">'+STAR_SVG.replace('<svg ','<svg width="56" height="56" ').replace('currentColor','var(--gold)')+'</span>'+
+      '<div><div class="hero-num">'+student.points+' 點</div><div class="hero-lab">目前擁有點數</div></div>'+
+      '<div class="hero-class" style="display:flex;align-items:center;gap:8px;">'+avatarHtml(student,'avatar-sm')+'歡迎回來，'+esc(student.name)+'</div></div>'+
+      '<h2 style="font-size:16px;">最近紀錄</h2><div class="ledger">'+rows+'</div>'
+    );
+  }
+
+  function renderStudentRequest(student){
+    var items = itemsOfClass(student.classId).filter(function(i){return i.value>0;});
+    var itemOptions = '<option value="">自行輸入說明</option>' + items.map(function(i){
+      return '<option value="'+i.id+'">'+esc(i.label)+'（建議 +'+i.value+'）</option>';
+    }).join('');
+    var myPending = state.transactions.filter(function(t){return t.studentId===student.id && t.type==='request' && t.status==='pending';});
+    var pendingHtml = myPending.length ? myPending.map(function(t){
+      return '<div class="review-card"><div class="rc-info"><div class="who">'+esc(t.reason)+'</div>'+
+        '<div class="what">建議 +'+t.value+' 點　·　'+fmtDate(t.createdAt)+'</div></div>'+
+        '<span class="status-tag pending">等待老師審核</span></div>';
+    }).join('') : '';
+    return (
+      '<h2>申請加分</h2><p class="page-sub">說明你做了什麼值得加分的事，送出後由老師審核</p>'+
+      '<div class="panel"><form id="requestForm">'+
+        '<div class="field"><label>選擇項目（選填）</label><select name="itemId">'+itemOptions+'</select></div>'+
+        '<div class="field"><label>說明</label><input type="text" name="reason" placeholder="例如：今天主動幫同學解題"></div>'+
+        '<div class="field small" style="width:140px;"><label>建議點數</label><input type="number" name="value" min="1" placeholder="5"></div>'+
+        '<button class="btn-primary" style="width:auto;padding:11px 20px;" type="submit">送出申請</button></form></div>'+
+      (pendingHtml ? '<h3 style="font-size:14px;color:var(--ink-soft);margin:20px 0 8px;">等待審核中</h3>'+pendingHtml : '')
+    );
+  }
+
+  function renderStudentRewards(student){
+    var rewards = rewardsOfClass(student.classId);
+    var myPendingRedemptions = state.redemptions.filter(function(r){return r.studentId===student.id && r.status==='pending';}).map(function(r){return r.rewardId;});
+    var rows = rewards.length ? rewards.map(function(r){
+      var isPending = myPendingRedemptions.indexOf(r.id) !== -1;
+      var canAfford = student.points >= r.cost;
+      return '<div class="reward-ticket">'+
+        (r.image ? '<img class="reward-img" src="'+r.image+'">' : '')+
+        '<div class="rt-top"><div><h4>'+esc(r.name)+'</h4><p>'+esc(r.description||'')+'</p></div><div class="cost">'+r.cost+' 點</div></div>'+
+        '<div style="margin-top:10px;text-align:right;">'+
+          (isPending ? '<span class="status-tag pending">等待審核</span>' :
+           canAfford ? '<button class="btn-sm btn-gold" data-action="redeem" data-id="'+r.id+'">兌換</button>' :
+           '<span class="status-tag rejected">點數不足</span>')+
+        '</div></div>';
+    }).join('') : '<div class="empty-state">目前還沒有可以兌換的獎勵</div>';
+    return '<h2>兌換獎勵</h2><p class="page-sub">用你的點數兌換獎勵，送出後由老師審核</p><div>'+rows+'</div>';
+  }
+
+  function renderStudentHistory(student){
+    var txs = state.transactions.filter(function(t){return t.studentId===student.id;}).map(function(t){return {kind:'point', at:t.createdAt, data:t};});
+    var reds = state.redemptions.filter(function(r){return r.studentId===student.id;}).map(function(r){return {kind:'redeem', at:r.createdAt, data:r};});
+    var all = txs.concat(reds).sort(function(a,b){return b.at-a.at;});
+    var rows = all.length ? all.map(function(entry){
+      if(entry.kind==='point'){
+        var t = entry.data;
+        var tag = t.status==='pending' ? '<span class="status-tag pending">待審核</span>' :
+                  t.status==='rejected' ? '<span class="status-tag rejected">已退回</span>' : '<span class="status-tag approved">已通過</span>';
+        return '<tr><td>'+fmtDate(t.createdAt)+'</td><td>點數：'+esc(t.reason)+'</td><td>'+(t.value>=0?'+':'')+t.value+'</td><td>'+tag+'</td></tr>';
+      } else {
+        var r = entry.data;
+        var rw = state.rewards.find(function(x){return x.id===r.rewardId;});
+        var tag2 = r.status==='pending' ? '<span class="status-tag pending">待審核</span>' :
+                   r.status==='rejected' ? '<span class="status-tag rejected">已退回</span>' : '<span class="status-tag approved">已完成</span>';
+        return '<tr><td>'+fmtDate(r.createdAt)+'</td><td>兌換：'+esc(rw?rw.name:'（獎勵已刪除）')+'</td><td>-'+(rw?rw.cost:'?')+'</td><td>'+tag2+'</td></tr>';
+      }
+    }).join('') : '<tr><td colspan="4" style="text-align:center;color:var(--ink-soft);padding:24px 0;">還沒有任何紀錄</td></tr>';
+    return (
+      '<h2>我的紀錄</h2><p class="page-sub">加分申請與獎勵兌換的完整歷史</p>'+
+      '<div class="panel"><table class="data-table"><thead><tr><th>時間</th><th>項目</th><th>點數</th><th>狀態</th></tr></thead><tbody>'+rows+'</tbody></table></div>'
+    );
+  }
+
+  function bindStudentApp(){
+    var student = findStudent(session.id);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
+    var studentAvatarInput = document.querySelector('[data-action="upload-avatar"]');
+    if(studentAvatarInput) studentAvatarInput.addEventListener('change', function(){
+      var file = studentAvatarInput.files && studentAvatarInput.files[0];
+      if(!file) return;
+      resizeImageFile(file, 200, 0.8, function(dataUrl){
+        if(dataUrl) update(ref(db, ROOT+'/students/'+session.id), {avatar:dataUrl}).catch(dbErr);
+      });
+    });
+    document.querySelectorAll('.tabrail button[data-tab]').forEach(function(btn){
+      btn.addEventListener('click', function(){ ui.studentTab = btn.getAttribute('data-tab'); render(); });
+    });
+    var requestForm = document.getElementById('requestForm');
+    if(requestForm) requestForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var fd = new FormData(requestForm);
+      var itemId = fd.get('itemId'); var reason=(fd.get('reason')||'').trim(); var value=parseInt(fd.get('value'),10);
+      var item = itemId ? state.pointItems.find(function(i){return i.id===itemId;}) : null;
+      if(item){ if(!reason) reason = item.label; if(isNaN(value)) value = item.value; }
+      if(!reason || isNaN(value) || value<=0){ alert('請輸入說明，以及大於 0 的建議點數'); return; }
+      set(ref(db, ROOT+'/transactions/'+uid('tx')), {
+        studentId:student.id, classId:student.classId, type:'request', reason:reason, value:value,
+        status:'pending', createdAt:Date.now()
+      }).catch(dbErr);
+    });
+    document.querySelectorAll('[data-action="redeem"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var rewardId = btn.getAttribute('data-id');
+        var rw = state.rewards.find(function(r){return r.id===rewardId;});
+        if(student.points < rw.cost){ alert('點數不足，無法兌換'); return; }
+        set(ref(db, ROOT+'/redemptions/'+uid('rd')), {
+          studentId:student.id, rewardId:rewardId, classId:student.classId, status:'pending', createdAt:Date.now()
+        }).catch(dbErr);
+      });
+    });
+  }
+
+  /* ---------------- init ---------------- */
+  loadSession();
+  render();
+</script>
+</body>
+</html>
